@@ -2,19 +2,14 @@
 <html lang="pt-br" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Consultor Financeiro 4.0 | Parceiro Rede Consig</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background-color: #fcfcfc;
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Outfit', sans-serif; background-color: #ffffff; overflow-x: hidden; width: 100%; }
+        
         :root {
             --brand-primary: #FF4B12; 
             --brand-primary-hover: #e63e0a;
@@ -30,27 +25,19 @@
 
         /* Linha Neon no Topo */
         .top-neon-line {
-            height: 6px;
-            width: 100%;
+            height: 6px; width: 100%;
             background: linear-gradient(90deg, var(--brand-primary), var(--gold-neon), var(--brand-primary));
             background-size: 200% auto;
             animation: neon-flow 6s linear infinite;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 110;
+            position: fixed; top: 0; left: 0; z-index: 200;
             box-shadow: 0 2px 15px rgba(255, 75, 18, 0.4);
         }
+        @keyframes neon-flow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        @keyframes neon-flow {
-            0% { background-position: 0% center; }
-            100% { background-position: 200% center; }
-        }
-
-        /* Hero com Imagem de Fundo */
+        /* Hero com Fundo solicitado e transparência de 0.30 */
         .hero-section {
             position: relative;
-            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('images/trabalhadores-de-varias-profissoes-felizes-fundo-de-predios.png');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.50)), url('images/trabalhadores-de-varias-profissoes-felizes-fundo-de-predios.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -58,167 +45,106 @@
             align-items: center;
         }
 
-        /* Animação Neon Circular para os Cards */
+        /* Animação Neon Circular para os Cards de Serviços */
         .neon-card {
-            position: relative;
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            z-index: 1;
+            position: relative; background: white; border-radius: 24px; overflow: hidden; z-index: 1;
         }
-
         .neon-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, transparent, transparent, var(--brand-primary));
-            animation: rotate-neon 4s linear infinite;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            animation: rotate-neon 4s linear infinite; z-index: -1; opacity: 0; transition: opacity 0.3s;
         }
+        .neon-card:hover::before { opacity: 1; }
+        .neon-card::after { content: ''; position: absolute; inset: 3px; background: white; border-radius: 21px; z-index: -1; }
+        @keyframes rotate-neon { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .neon-card:hover::before {
-            opacity: 1;
+        /* Notificação Pop-up Social */
+        #socialNotify {
+            position: fixed; bottom: 30px; left: -400px; z-index: 1000; background: white;
+            padding: 15px 20px; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-left: 5px solid var(--brand-primary); display: flex; align-items: center; gap: 15px;
+            transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: calc(100% - 40px);
         }
+        #socialNotify.active { left: 20px; }
 
-        .neon-card::after {
-            content: '';
-            position: absolute;
-            inset: 3px; 
-            background: white;
-            border-radius: 21px;
-            z-index: -1;
-        }
-
-        @keyframes rotate-neon {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Notificação Pop-up */
-        #notification-popup {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 1000;
-            transform: translateY(150%);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border-left: 4px solid var(--brand-primary);
-            max-width: 320px;
-        }
-
-        #notification-popup.show {
-            transform: translateY(0);
-        }
+        /* Drawer Mobile */
+        #mobileDrawer { transform: translateX(100%); transition: transform 0.4s; z-index: 300; }
+        #mobileDrawer.active { transform: translateX(0); }
+        #drawerOverlay { z-index: 290; }
 
         .info-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 20px;
         }
+        .info-overlay.active { display: flex; }
 
-        .info-overlay.active {
-            display: flex;
-        }
-
-        .btn-pulse-orange {
-            animation: pulse-orange 2s infinite;
-        }
+        .btn-pulse-orange { animation: pulse-orange 2s infinite; }
         @keyframes pulse-orange {
             0% { box-shadow: 0 0 0 0 rgba(255, 75, 18, 0.4); }
             70% { box-shadow: 0 0 0 15px rgba(255, 75, 18, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 75, 18, 0); }
         }
 
-        .testimonial-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
+        .testimonial-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        .typing-indicator { display: inline-flex; gap: 2px; }
+        .typing-dot { width: 4px; height: 4px; background: #94a3b8; border-radius: 50%; animation: dot-pulse 1s infinite ease-in-out; }
+        @keyframes dot-pulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
     </style>
 </head>
 <body class="text-slate-900">
 
-    <!-- Linha Neon Animada Topo -->
     <div class="top-neon-line"></div>
 
-    <!-- Notificação Dinâmica de Clientes -->
-    <div id="notification-popup">
-        <div class="bg-brand-primary/10 p-2 rounded-full text-brand-primary">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
-        </div>
-        <div class="text-xs">
-            <p class="font-bold text-slate-800" id="notify-msg">Mais um cliente satisfeito!</p>
-            <p class="text-slate-500 italic" id="notify-detail">Realizou um empréstimo de R$ 15.000</p>
-        </div>
-    </div>
-
-    <!-- Top Info Bar -->
-    <div class="bg-[#1a1a1a] text-white py-2 text-[11px] font-medium tracking-wider mt-[6px]">
-        <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center sm:justify-end gap-6">
-            <div class="flex items-center gap-2"><i data-lucide="phone" class="w-3.5 h-3.5 text-brand-primary"></i> (63) 99963-7080</div>
-            <div class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-brand-primary"></i> atendimentocf4.0@gmail.com</div>
-        </div>
-    </div>
-
     <!-- Navegação -->
-    <nav class="sticky top-[6px] z-[100] bg-white/95 backdrop-blur-md border-b border-orange-100 py-3 shadow-sm">
+    <nav class="sticky top-[6px] z-[150] bg-white/95 backdrop-blur-md border-b border-orange-100 py-3 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-4">
                 <div class="flex items-center text-base sm:text-lg font-black tracking-tight">
                     <span style="color: var(--brand-dark-blue);">CONSULTOR</span>
-                    <span class="text-brand-primary ml-1">FINANCEIRO 4.0</span>
+                    <span class="text-brand-primary ml-1">CF4.0</span>
                 </div>
                 <div class="hidden sm:block h-6 w-[2px] bg-orange-200 opacity-60"></div>
-                <div class="hidden sm:block text-brand-primary font-bold text-xs lowercase tracking-tight">
-                    sua vida sem <span class="font-black italic">dívidas!</span>
-                </div>
+                <div class="hidden sm:block text-brand-primary font-bold text-xs lowercase">sua vida sem dívidas!</div>
             </div>
 
-            <div class="hidden lg:flex space-x-6 items-center font-bold text-slate-600 text-[12px] uppercase tracking-tighter">
+            <div class="hidden lg:flex space-x-6 items-center font-bold text-slate-600 text-[11px] uppercase tracking-tighter">
                 <a href="#inicio" class="hover:text-brand-primary transition">Início</a>
                 <a href="#servicos" class="hover:text-brand-primary transition">Serviços</a>
                 <a href="#vantagens" class="hover:text-brand-primary transition">Vantagens</a>
                 <a href="#depoimentos" class="hover:text-brand-primary transition">Depoimentos</a>
-                <a href="#contato" class="hover:text-brand-primary transition font-black text-brand-primary border-l pl-4 border-slate-200">Fale Conosco</a>
+                <a href="#contato" class="hover:text-brand-primary transition font-black text-brand-primary border-l pl-4 border-slate-200 uppercase">Fale Conosco</a>
             </div>
             
-            <div class="lg:hidden flex items-center gap-4">
-                <button class="p-2 text-brand-dark"><i data-lucide="menu"></i></button>
+            <div class="lg:hidden flex items-center">
+                <button class="p-2" onclick="toggleDrawer()"><i data-lucide="menu"></i></button>
             </div>
         </div>
     </nav>
+
+    <!-- Drawer Mobile -->
+    <div id="mobileDrawer" class="fixed inset-y-0 right-0 w-72 bg-white shadow-2xl p-8 flex flex-col gap-6 lg:hidden">
+        <button onclick="toggleDrawer()" class="self-end p-2 text-slate-400"><i data-lucide="x"></i></button>
+        <a href="#inicio" onclick="toggleDrawer()" class="font-bold text-lg">Início</a>
+        <a href="#servicos" onclick="toggleDrawer()" class="font-bold text-lg">Serviços</a>
+        <a href="#vantagens" onclick="toggleDrawer()" class="font-bold text-lg">Vantagens</a>
+        <a href="#depoimentos" onclick="toggleDrawer()" class="font-bold text-lg">Depoimentos</a>
+        <a href="#contato" onclick="toggleDrawer()" class="font-bold text-lg text-brand-primary uppercase">Fale Conosco</a>
+    </div>
+    <div id="drawerOverlay" onclick="toggleDrawer()" class="hidden fixed inset-0 bg-black/40 lg:hidden backdrop-blur-sm"></div>
 
     <!-- Hero Section -->
     <section id="inicio" class="hero-section min-h-[90vh] overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
             <div class="z-10 text-center lg:text-left">
-                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white font-black text-sm mb-8 border border-white/20 tracking-wider uppercase">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white font-black text-xs mb-8 border border-white/20 tracking-wider uppercase">
                     <span class="text-brand-primary">★</span> 
                     PARCEIRO OFICIAL DA REDE CONSIG
                 </div>
                 <h1 class="text-5xl lg:text-[5.5rem] font-black text-white leading-[1] mb-8 italic uppercase tracking-tighter">
                     Sua vida <br> <span class="text-brand-primary">4.0</span> agora.
                 </h1>
-                <p class="text-xl text-slate-200 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+                <p class="text-xl text-slate-100 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
                     Libere o crédito que você merece com a segurança da Rede Consig e a inteligência estratégica do Consultor Financeiro 4.0. 
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
@@ -227,44 +153,37 @@
                     </a>
                 </div>
             </div>
-            <div class="hidden lg:block relative">
-                <img src="image_fb5e7d.png" alt="Cartão Elite" class="relative z-10 w-full max-w-md mx-auto transform rotate-6 hover:rotate-0 transition-all duration-700 shadow-[0_50px_100px_-20px_rgba(255,75,18,0.5)]">
-            </div>
         </div>
     </section>
 
     <!-- Nossos Números -->
-    <section id="numeros" class="py-24 bg-white border-b border-orange-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-                <div class="group">
-                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="trending-up" class="w-12 h-12"></i></div>
-                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+1 Bilhão</h3>
-                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Em Crédito Liberado</p>
-                </div>
-                <div class="group">
-                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-12 h-12"></i></div>
-                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+50.000</h3>
-                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Clientes Satisfeitos</p>
-                </div>
-                <div class="group">
-                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="shield-check" class="w-12 h-12"></i></div>
-                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">15 Anos</h3>
-                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">De Atuação Elite</p>
-                </div>
+    <section class="py-24 bg-white border-b border-orange-50">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div>
+                <div class="text-brand-primary mb-4 flex justify-center"><i data-lucide="trending-up" class="w-12 h-12"></i></div>
+                <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+1 Bilhão</h3>
+                <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Em Crédito Liberado</p>
+            </div>
+            <div>
+                <div class="text-brand-primary mb-4 flex justify-center"><i data-lucide="users" class="w-12 h-12"></i></div>
+                <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+50.000</h3>
+                <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Clientes Satisfeitos</p>
+            </div>
+            <div>
+                <div class="text-brand-primary mb-4 flex justify-center"><i data-lucide="shield-check" class="w-12 h-12"></i></div>
+                <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">15 Anos</h3>
+                <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">De Atuação Elite</p>
             </div>
         </div>
     </section>
 
-    <!-- Por que escolher -->
+    <!-- Vantagens -->
     <section id="vantagens" class="py-24 bg-brand-light">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter uppercase">Por que escolher o Consultor 4.0?</h2>
-                <div class="h-1.5 w-24 bg-brand-primary mx-auto rounded-full"></div>
-            </div>
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter">Por que escolher o Consultor 4.0?</h2>
+            <div class="h-1.5 w-24 bg-brand-primary mx-auto mb-16 rounded-full"></div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="p-8 space-y-4">
                     <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="zap" class="w-8 h-8"></i></div>
                     <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Agilidade Digital</h4>
@@ -273,23 +192,23 @@
                 <div class="p-8 space-y-4">
                     <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="lock" class="w-8 h-8"></i></div>
                     <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Segurança Elite</h4>
-                    <p class="text-sm text-slate-500 font-medium">Protocolos de segurança bancária para proteger seus dados e seu futuro.</p>
+                    <p class="text-sm text-slate-500 font-medium">Protocolos bancários para proteger seu futuro.</p>
                 </div>
                 <div class="p-8 space-y-4">
                     <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="percent" class="w-8 h-8"></i></div>
                     <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Menores Taxas</h4>
-                    <p class="text-sm text-slate-500 font-medium">Parcerias estratégicas com os maiores bancos para garantir o menor custo.</p>
+                    <p class="text-sm text-slate-500 font-medium">Parcerias com os maiores bancos do país.</p>
                 </div>
                 <div class="p-8 space-y-4">
                     <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="heart" class="w-8 h-8"></i></div>
                     <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Atendimento Humano</h4>
-                    <p class="text-sm text-slate-500 font-medium">Uma equipe de especialistas pronta para ouvir você e encontrar a solução.</p>
+                    <p class="text-sm text-slate-500 font-medium">Especialistas prontos para ouvir você.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Serviços -->
+    <!-- Nossos Serviços -->
     <section id="servicos" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4">
             <div class="text-center mb-16">
@@ -352,36 +271,31 @@
 
     <!-- Depoimentos -->
     <section id="depoimentos" class="py-24 bg-brand-light">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter">O que dizem nossos clientes</h2>
-                <div class="h-1.5 w-20 bg-brand-primary mx-auto rounded-full"></div>
-            </div>
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter">O que dizem nossos clientes</h2>
+            <div class="h-1.5 w-20 bg-brand-primary mx-auto mb-16 rounded-full"></div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
                 <div class="testimonial-card">
-                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                    <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
                     <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"O atendimento do Consultor 4.0 foi espetacular. Consegui antecipar meu FGTS em menos de 30 minutos!"</p>
-                    <div class="font-black text-brand-dark">João Silva</div>
-                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Trabalhador CLT</div>
+                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">João Silva - Aposentado INSS</div>
                 </div>
                 <div class="testimonial-card">
-                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                    <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
                     <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Reduzi os juros dos meus empréstimos antigos através da portabilidade estratégica. Recomendo muito!"</p>
-                    <div class="font-black text-brand-dark">Maria Oliveira</div>
-                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Servidora Pública</div>
+                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">Maria Oliveira - Servidora Pública</div>
                 </div>
                 <div class="testimonial-card">
-                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                    <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
                     <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Equipe muito atenciosa e transparente. O dinheiro caiu na conta exatamente como prometido."</p>
-                    <div class="font-black text-brand-dark">Carlos Rocha</div>
-                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Pensionista</div>
+                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">Carlos Rocha - Pensionista</div>
                 </div>
             </div>
         </div>
@@ -389,124 +303,100 @@
 
     <!-- Fale Conosco -->
     <section id="contato" class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid lg:grid-cols-2 gap-12 items-start">
-                <div class="space-y-10">
-                    <div>
-                        <p class="text-brand-primary font-black uppercase tracking-[0.2em] text-xs mb-4">CONTATO</p>
-                        <h2 class="text-4xl lg:text-6xl font-black text-brand-primary tracking-tighter uppercase italic">Dúvidas ou sugestões</h2>
+        <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12">
+            <div class="space-y-10">
+                <div>
+                    <p class="text-brand-primary font-black uppercase tracking-[0.2em] text-xs mb-4">CONTATO</p>
+                    <h2 class="text-4xl lg:text-6xl font-black text-brand-primary tracking-tighter uppercase italic">Dúvidas ou sugestões</h2>
+                </div>
+                <div class="space-y-8">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-brand-primary"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">WhatsApp</p><p class="text-lg font-black text-slate-800">(63) 99963-7080</p></div>
                     </div>
-
-                    <div class="space-y-8">
-                        <div class="flex items-start gap-5">
-                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-brand-primary"></i></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">WhatsApp</p>
-                                <p class="text-lg font-black text-slate-800">(63) 99963-7080</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-5">
-                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="mail" class="w-5 h-5 text-brand-primary"></i></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Email</p>
-                                <p class="text-lg font-black text-slate-800">atendimentocf4.0@gmail.com</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-5">
-                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="instagram" class="w-5 h-5 text-brand-primary"></i></div>
-                            <div>
-                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Instagram</p>
-                                <p class="text-lg font-black text-slate-800">@consultorfinanceiro40</p>
-                            </div>
-                        </div>
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="mail" class="w-5 h-5 text-brand-primary"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">Email</p><p class="text-lg font-black text-slate-800">atendimentocf4.0@gmail.com</p></div>
                     </div>
-
-                    <div class="relative w-full max-w-sm">
-                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" alt="Atendimento" class="rounded-3xl shadow-xl border-4 border-white">
+                    <div class="flex items-center gap-5">
+                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="instagram" class="w-5 h-5 text-brand-primary"></i></div>
+                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">Instagram</p><p class="text-lg font-black text-slate-800">@consultorfinanceiro40</p></div>
                     </div>
                 </div>
+                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" class="rounded-3xl shadow-xl border-4 border-white max-w-sm">
+            </div>
 
-                <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100">
-                    <form class="space-y-6">
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-700">Nome completo</label>
-                            <input type="text" placeholder="Seu nome completo" class="w-full p-4 bg-white border-slate-200">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-700">Telefone</label>
-                            <input type="text" placeholder="(00) 00000-0000" class="w-full p-4 bg-white border-slate-200">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-700">Email</label>
-                            <input type="email" placeholder="seu@email.com" class="w-full p-4 bg-white border-slate-200">
-                        </div>
-                        <div class="space-y-2">
-                            <label class="text-sm font-bold text-slate-700">Mensagem</label>
-                            <textarea placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 bg-white border-slate-200"></textarea>
-                        </div>
-                        <button type="submit" class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all shadow-xl shadow-orange-500/20 uppercase tracking-tighter">Enviar Mensagem</button>
-                    </form>
-                </div>
+            <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100">
+                <form class="space-y-6" onsubmit="event.preventDefault(); window.open('https://wa.me/5563999637080')">
+                    <input type="text" placeholder="Nome completo" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <input type="text" placeholder="(00) 00000-0000" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <input type="email" placeholder="seu@email.com" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <textarea placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all"></textarea>
+                    <button class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all uppercase shadow-xl shadow-orange-500/20">Enviar Mensagem</button>
+                </form>
             </div>
         </div>
     </section>
 
-    <!-- Rodapé Oficiais (AJUSTADO: CONSULTOR CF4.0) -->
+    <!-- Rodapé V1 -->
     <footer class="bg-[#111] text-slate-300 pt-20">
-        <div class="max-w-7xl mx-auto px-4 pb-16">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
-                <div class="space-y-6">
-                    <span class="text-3xl font-black text-white italic">CONSULTOR <span class="text-brand-primary">CF4.0</span></span>
-                    <p class="text-sm text-slate-500 leading-relaxed font-medium">Especialistas em crédito estratégico e tecnologia financeira personalizada para realizar seus sonhos.</p>
-                </div>
-                <div>
-                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">MENU</h5>
-                    <ul class="space-y-4 text-sm font-medium">
-                        <li><a href="#inicio" class="hover:text-brand-primary transition">Início</a></li>
-                        <li><a href="#servicos" class="hover:text-brand-primary transition">Serviços</a></li>
-                        <li><a href="#depoimentos" class="hover:text-brand-primary transition">Depoimentos</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">SOCIAL</h5>
-                    <ul class="space-y-4 text-sm text-slate-500 font-medium">
-                        <li><a href="https://instagram.com/consultorfinanceiro40" target="_blank" class="hover:text-brand-primary transition">Instagram</a></li>
-                        <li><a href="https://wa.me/5563999637080" target="_blank" class="hover:text-brand-primary transition">WhatsApp</a></li>
-                    </ul>
-                </div>
-                <div class="space-y-8">
-                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">CONTATO</h5>
-                    <ul class="space-y-5 text-sm font-medium">
-                        <li class="flex items-center justify-center md:justify-start gap-3"><i data-lucide="phone" class="w-4 h-4 text-brand-primary"></i> (63) 99963-7080</li>
-                        <li class="flex items-center justify-center md:justify-start gap-3"><i data-lucide="mail" class="w-4 h-4 text-brand-primary"></i> atendimentocf4.0@gmail.com</li>
-                    </ul>
-                </div>
+        <div class="max-w-7xl mx-auto px-4 pb-16 grid grid-cols-1 md:grid-cols-4 gap-12 text-center md:text-left">
+            <div class="space-y-6">
+                <span class="text-2xl font-black text-white italic uppercase">CONSULTOR <span class="text-brand-primary">CF4.0</span></span>
+                <p class="text-xs text-slate-500 leading-relaxed font-medium">Especialistas em estratégia financeira e tecnologia personalizada para realizar seus objetivos.</p>
             </div>
-            <div class="mt-20 pt-8 border-t border-white/5 text-center text-[10px] uppercase font-bold tracking-[0.3em] text-slate-600">
-                © 2024 CONSULTOR CF4.0 - TODOS OS DIREITOS RESERVADOS.
+            <div>
+                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">MENU</h5>
+                <ul class="space-y-4 text-xs font-bold uppercase">
+                    <li><a href="#inicio" class="hover:text-white transition">Início</a></li>
+                    <li><a href="#servicos" class="hover:text-white transition">Serviços</a></li>
+                    <li><a href="#depoimentos" class="hover:text-white transition">Depoimentos</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">CONTATO</h5>
+                <ul class="space-y-4 text-xs font-bold uppercase">
+                    <li>(63) 99963-7080</li>
+                    <li class="lowercase">atendimentocf4.0@gmail.com</li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">LOCAL</h5>
+                <p class="text-xs font-bold uppercase">Palmas - Tocantins</p>
             </div>
         </div>
-        <!-- Faixa Inferior Oficilalizada como V1 -->
-        <a href="#inicio" class="block bg-brand-primary py-3 text-center hover:bg-brand-primary-hover transition-colors group">
-            <p class="text-white text-[10px] font-black uppercase tracking-widest leading-none flex items-center justify-center gap-3">
+        <div class="py-10 border-t border-white/5 text-center text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">
+            © 2024 CONSULTOR CF4.0 - TODOS OS DIREITOS RESERVADOS.
+        </div>
+        <a href="#inicio" class="block bg-brand-primary py-3 text-center group">
+            <p class="text-white text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-3">
                 CONSULTOR FINANCEIRO 4.0 CREDENCIADO DA REDE CONSIG 
-                <span class="h-4 w-[1px] bg-white/30"></span>
-                <span class="bg-white text-brand-primary px-2 py-0.5 rounded text-[9px] group-hover:scale-110 transition-transform shadow-sm">V1.0 FINALIZADA</span>
+                <span class="bg-white text-brand-primary px-2 py-0.5 rounded text-[9px] group-hover:scale-110 transition-all uppercase">V1.0 FINALIZADA</span>
             </p>
         </a>
     </footer>
 
-    <!-- Valenttina -->
-    <div class="fixed bottom-24 right-8 z-[200] flex items-end gap-4">
-        <div class="bg-white p-4 rounded-3xl rounded-br-none shadow-2xl max-w-[200px] border border-orange-100 hidden sm:block">
-            <p class="text-[11px] font-semibold leading-relaxed">Olá! Sou a <span class="text-brand-primary">Valenttina</span>. Vamos encontrar a melhor estratégia de crédito para você? ✨</p>
+    <!-- Notificações Dinâmicas (Social Proof) -->
+    <div id="socialNotify">
+        <div class="w-10 h-10 bg-orange-100 text-brand-primary rounded-full flex items-center justify-center flex-shrink-0"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
+        <div>
+            <p id="notifyText" class="text-[11px] text-slate-600 leading-tight">
+                <strong id="notifyName" class="text-slate-900">...</strong> contratou <strong>R$ <span id="notifyAmount">...</span></strong> para <span id="notifyDream">...</span>.
+            </p>
+            <p class="text-[9px] text-brand-primary font-black uppercase mt-1 italic">Negócio Fechado! ✨</p>
         </div>
-        <a href="https://wa.me/5563999637080" target="_blank" class="relative group">
-            <div class="w-16 h-16 rounded-full border-4 border-brand-primary overflow-hidden shadow-2xl transition group-hover:scale-110">
-                <img src="images/logo_whatsapp_valenttina_duarte.png" class="w-full h-full object-cover">
+    </div>
+
+    <!-- Valenttina -->
+    <div class="fixed bottom-8 right-8 z-[200] flex flex-col items-end gap-5 pointer-events-none">
+        <div id="bubble" class="bg-white p-6 rounded-[2.5rem] shadow-2xl border border-orange-100 text-sm font-bold text-slate-700 max-w-[280px] pointer-events-auto transition-all transform scale-0 origin-bottom-right">
+            <p id="bubbleText">Olá! Sou a Valenttina Duarte. Estou aqui para ajudar você a conquistar sua liberdade financeira! ✨</p>
+        </div>
+        <button onclick="window.open('https://wa.me/5563999637080')" class="valenttina-btn pointer-events-auto bg-[#22c55e] p-1 rounded-full border-4 border-white shadow-xl hover:scale-110 transition-all">
+            <div class="w-16 h-16 rounded-full overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200" alt="Valenttina Duarte">
             </div>
-            <div class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
-        </a>
+        </button>
     </div>
 
     <!-- Modal Info -->
@@ -523,45 +413,43 @@
     <script>
         lucide.createIcons();
 
-        // Notificações Sociais Aleatórias
-        	const amounts = [
-  		"6.000", "8.500", "15.000", "3.000", "5.400", 
-    		"12.200", "20.000", "4.100", "2.500", "35.000", 
-   		"7.800", "50.000"];
+        // DADOS ENVIADOS PARA CONGRUÊNCIA
+        const WHATS_NUM = "5563999637080";
+        const isMobile = window.innerWidth < 1024;
+        
+        const notifyNames = ["Marcos", "Ana", "Ricardo", "Juliana", "Carlos", "Luciana", "Fernando", "Patrícia", "Sérgio", "Renata"];
+        const notifyAmounts = ["16.000", "18.500", "15.000", "13.000", "15.400", "12.200", "20.000", "14.100", "12.500", "35.000", "17.800", "50.000"];
+        const dreams = ["realizar a reforma da casa", "fazer a viagem dos sonhos", "quitar dívidas pendentes", "comprar um novo veículo", "investir no próprio negócio", "ajudar a família", "pagar os estudos", "limpar o nome", "comprar móveis novos", "dar entrada em um imóvel"];
+        
+        const valenttinaQuotes = [
+            "Já pensou em usar esse valor para aquela reforma que você tanto quer? 🏠",
+            "Imagine a tranquilidade de limpar seu nome e dormir sem boletos. Vamos resolver isso? ✨",
+            "Qual o seu próximo destino? Com essa margem, a viagem dos sonhos está bem perto! ✈️",
+            "Investir no seu próprio negócio é o passo para a liberdade. Vamos simular? 🤝",
+            "O alívio de quitar as dívidas está a um clique. Deixe a burocracia com a gente! ❤️"
+        ];
 
-	const dreams = [
-   	 "realizar a reforma da casa", 
-   	 "fazer a viagem dos sonhos", 
- 	 "quitar dívidas pendentes", 
-    	 "comprar um novo veículo", 
-    	 "investir no próprio negócio", 
-    	 "ajudar a família",
-    	 "pagar os estudos",
-    	 "limpar o nome",
-     	 "comprar móveis novos",
-    	 "fazer um curso de especialização",
-    	 "dar entrada em um imóvel",
-    	 "organizar uma festa de casamento"
-	];
-
-        function showRandomNotification() {
-            const popup = document.getElementById('notification-popup');
-            const msgDetail = document.getElementById('notify-detail');
-            
-            const randomAmount = amounts[Math.floor(Math.random() * amounts.length)];
-            const randomDream = dreams[Math.floor(Math.random() * dreams.length)];
-            
-            msgDetail.innerText = `Realizou um empréstimo de R$ ${randomAmount} para ${randomDream}.`;
-            
-            popup.classList.add('show');
-            
-            setTimeout(() => {
-                popup.classList.remove('show');
-            }, 6000);
+        function showSocialProof() {
+            const popup = document.getElementById('socialNotify');
+            document.getElementById('notifyName').innerText = notifyNames[Math.floor(Math.random() * notifyNames.length)];
+            document.getElementById('notifyAmount').innerText = notifyAmounts[Math.floor(Math.random() * notifyAmounts.length)];
+            document.getElementById('notifyDream').innerText = dreams[Math.floor(Math.random() * dreams.length)];
+            popup.classList.add('active');
+            setTimeout(() => { popup.classList.remove('active'); }, 6000);
         }
 
-        setInterval(showRandomNotification, 12000);
-        setTimeout(showRandomNotification, 3000);
+        function typeValenttinaMessage(message) {
+            const bubble = document.getElementById('bubble');
+            const bubbleText = document.getElementById('bubbleText');
+            bubbleText.innerHTML = `<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div> Digitando...`;
+            bubble.classList.add('scale-100');
+            setTimeout(() => { bubbleText.innerText = message; }, 1800);
+        }
+
+        function toggleDrawer() {
+            document.getElementById('mobileDrawer').classList.toggle('active');
+            document.getElementById('drawerOverlay').classList.toggle('hidden');
+        }
 
         const infoData = {
             consignado: { title: "Crédito Consignado", text: "As melhores taxas para aposentados e pensionistas.", icon: "banknote" },
@@ -573,7 +461,7 @@
         };
 
         function showInfo(key) {
-            const data = infoData[key] || { title: "Informação", text: "Entre em contato para saber mais.", icon: "info" };
+            const data = infoData[key];
             document.getElementById('modal-title').innerText = data.title;
             document.getElementById('modal-text').innerText = data.text;
             document.getElementById('modal-icon').innerHTML = `<i data-lucide="${data.icon}" class="w-8 h-8"></i>`;
@@ -584,6 +472,15 @@
         function closeInfo() {
             document.getElementById('info-modal').classList.remove('active');
         }
+
+        window.onload = () => { 
+            lucide.createIcons(); 
+            setInterval(showSocialProof, 15000);
+            setTimeout(showSocialProof, 3000);
+            setTimeout(() => { 
+                typeValenttinaMessage(valenttinaQuotes[Math.floor(Math.random() * valenttinaQuotes.length)]);
+            }, 6000);
+        };
     </script>
 </body>
 </html>
