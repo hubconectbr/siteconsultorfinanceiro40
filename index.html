@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultor Financeiro 4.0 | Parceiro Rede Consig</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body { 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #fcfcfc;
+            overflow-x: hidden;
+        }
+
+        :root {
+            --brand-primary: #FF4B12; 
+            --brand-primary-hover: #e63e0a;
+            --brand-dark-blue: #0A1629; 
+            --brand-light: #FFF5F1; 
+            --brand-beige: #F8F3EE;
+            --brand-dark: #1a1a1a;
+            --gold-neon: #FFD700;
+        }
+
+        .text-brand-primary { color: var(--brand-primary); }
+        .bg-brand-primary { background-color: var(--brand-primary); }
+
+        /* Linha Neon no Topo */
+        .top-neon-line {
+            height: 6px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), var(--gold-neon), var(--brand-primary));
+            background-size: 200% auto;
+            animation: neon-flow 6s linear infinite;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 110;
+            box-shadow: 0 2px 15px rgba(255, 75, 18, 0.4);
+        }
+
+        @keyframes neon-flow {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        /* Hero com Imagem de Fundo */
+        .hero-section {
+            position: relative;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.85)), url('images/trabalhadores-de-varias-profissoes-felizes-fundo-de-predios.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Animação Neon Circular para os Cards */
+        .neon-card {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .neon-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, var(--brand-primary));
+            animation: rotate-neon 4s linear infinite;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .neon-card:hover::before {
+            opacity: 1;
+        }
+
+        .neon-card::after {
+            content: '';
+            position: absolute;
+            inset: 3px; 
+            background: white;
+            border-radius: 21px;
+            z-index: -1;
+        }
+
+        @keyframes rotate-neon {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notificação Pop-up */
+        #notification-popup {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: white;
+            padding: 15px 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border-left: 4px solid var(--brand-primary);
+            max-width: 320px;
+        }
+
+        #notification-popup.show {
+            transform: translateY(0);
+        }
+
+        .info-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .info-overlay.active {
+            display: flex;
+        }
+
+        .btn-pulse-orange {
+            animation: pulse-orange 2s infinite;
+        }
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(255, 75, 18, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(255, 75, 18, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 75, 18, 0); }
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <!-- Linha Neon Animada Topo -->
+    <div class="top-neon-line"></div>
+
+    <!-- Notificação Dinâmica de Clientes -->
+    <div id="notification-popup">
+        <div class="bg-brand-primary/10 p-2 rounded-full text-brand-primary">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+        </div>
+        <div class="text-xs">
+            <p class="font-bold text-slate-800" id="notify-msg">Mais um cliente satisfeito!</p>
+            <p class="text-slate-500 italic" id="notify-detail">Realizou um empréstimo de R$ 15.000</p>
+        </div>
+    </div>
+
+    <!-- Top Info Bar -->
+    <div class="bg-[#1a1a1a] text-white py-2 text-[11px] font-medium tracking-wider mt-[6px]">
+        <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-center sm:justify-end gap-6">
+            <div class="flex items-center gap-2"><i data-lucide="phone" class="w-3.5 h-3.5 text-brand-primary"></i> (63) 99963-7080</div>
+            <div class="flex items-center gap-2"><i data-lucide="mail" class="w-3.5 h-3.5 text-brand-primary"></i> atendimentocf4.0@gmail.com</div>
+        </div>
+    </div>
+
+    <!-- Navegação -->
+    <nav class="sticky top-[6px] z-[100] bg-white/95 backdrop-blur-md border-b border-orange-100 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="flex items-center text-base sm:text-lg font-black tracking-tight">
+                    <span style="color: var(--brand-dark-blue);">CONSULTOR</span>
+                    <span class="text-brand-primary ml-1">FINANCEIRO 4.0</span>
+                </div>
+                <div class="hidden sm:block h-6 w-[2px] bg-orange-200 opacity-60"></div>
+                <div class="hidden sm:block text-brand-primary font-bold text-xs lowercase tracking-tight">
+                    sua vida sem <span class="font-black italic">dívidas!</span>
+                </div>
+            </div>
+
+            <div class="hidden lg:flex space-x-6 items-center font-bold text-slate-600 text-[12px] uppercase tracking-tighter">
+                <a href="#inicio" class="hover:text-brand-primary transition">Início</a>
+                <a href="#servicos" class="hover:text-brand-primary transition">Serviços</a>
+                <a href="#vantagens" class="hover:text-brand-primary transition">Vantagens</a>
+                <a href="#depoimentos" class="hover:text-brand-primary transition">Depoimentos</a>
+                <a href="#contato" class="hover:text-brand-primary transition font-black text-brand-primary border-l pl-4 border-slate-200">Fale Conosco</a>
+            </div>
+            
+            <div class="lg:hidden flex items-center gap-4">
+                <button class="p-2 text-brand-dark"><i data-lucide="menu"></i></button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero-section min-h-[90vh] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
+            <div class="z-10 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white font-black text-sm mb-8 border border-white/20 tracking-wider uppercase">
+                    <span class="text-brand-primary">★</span> 
+                    PARCEIRO OFICIAL DA REDE CONSIG
+                </div>
+                <h1 class="text-5xl lg:text-[5.5rem] font-black text-white leading-[1] mb-8 italic uppercase tracking-tighter">
+                    Sua vida <br> <span class="text-brand-primary">4.0</span> agora.
+                </h1>
+                <p class="text-xl text-slate-200 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+                    Libere o crédito que você merece com a segurança da Rede Consig e a inteligência estratégica do Consultor Financeiro 4.0. 
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="https://hubconectbr.github.io/calculadora.consultorfinanceiro/" target="_blank" class="bg-brand-primary text-white px-12 py-6 rounded-2xl font-black text-2xl hover:bg-brand-primary-hover transition-all transform hover:-translate-y-1 btn-pulse-orange shadow-2xl shadow-orange-500/40 flex items-center justify-center gap-4 uppercase tracking-tighter">
+                        <i data-lucide="calculator" class="w-8 h-8"></i> Quero simular agora
+                    </a>
+                </div>
+            </div>
+            <div class="hidden lg:block relative">
+                <img src="image_fb5e7d.png" alt="Cartão Elite" class="relative z-10 w-full max-w-md mx-auto transform rotate-6 hover:rotate-0 transition-all duration-700 shadow-[0_50px_100px_-20px_rgba(255,75,18,0.5)]">
+            </div>
+        </div>
+    </section>
+
+    <!-- Nossos Números -->
+    <section id="numeros" class="py-24 bg-white border-b border-orange-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                <div class="group">
+                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="trending-up" class="w-12 h-12"></i></div>
+                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+1 Bilhão</h3>
+                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Em Crédito Liberado</p>
+                </div>
+                <div class="group">
+                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="users" class="w-12 h-12"></i></div>
+                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">+50.000</h3>
+                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Clientes Satisfeitos</p>
+                </div>
+                <div class="group">
+                    <div class="text-brand-primary mb-4 flex justify-center group-hover:scale-110 transition-transform"><i data-lucide="shield-check" class="w-12 h-12"></i></div>
+                    <h3 class="text-5xl font-black text-slate-900 mb-2 tracking-tighter">15 Anos</h3>
+                    <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">De Atuação Elite</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Por que escolher -->
+    <section id="vantagens" class="py-24 bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter uppercase">Por que escolher o Consultor 4.0?</h2>
+                <div class="h-1.5 w-24 bg-brand-primary mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="p-8 space-y-4">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="zap" class="w-8 h-8"></i></div>
+                    <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Agilidade Digital</h4>
+                    <p class="text-sm text-slate-500 font-medium">Processos 100% online com liberação de crédito em tempo recorde.</p>
+                </div>
+                <div class="p-8 space-y-4">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="lock" class="w-8 h-8"></i></div>
+                    <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Segurança Elite</h4>
+                    <p class="text-sm text-slate-500 font-medium">Protocolos de segurança bancária para proteger seus dados e seu futuro.</p>
+                </div>
+                <div class="p-8 space-y-4">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="percent" class="w-8 h-8"></i></div>
+                    <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Menores Taxas</h4>
+                    <p class="text-sm text-slate-500 font-medium">Parcerias estratégicas com os maiores bancos para garantir o menor custo.</p>
+                </div>
+                <div class="p-8 space-y-4">
+                    <div class="w-16 h-16 bg-white rounded-3xl flex items-center justify-center text-brand-primary mx-auto shadow-xl"><i data-lucide="heart" class="w-8 h-8"></i></div>
+                    <h4 class="text-lg font-black uppercase tracking-tight text-brand-dark italic">Atendimento Humano</h4>
+                    <p class="text-sm text-slate-500 font-medium">Uma equipe de especialistas pronta para ouvir você e encontrar a solução.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Serviços -->
+    <section id="servicos" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter">Nossos Serviços</h2>
+                <div class="h-1.5 w-20 bg-brand-primary mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="banknote" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Empréstimos Consignados</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">Taxas exclusivas para aposentados e pensionistas do INSS e Servidores Públicos.</p>
+                    <button onclick="showInfo('consignado')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+                <!-- Card 2 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="credit-card" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Cartão Benefício</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">O cartão que te devolve benefícios reais em cada uso, exclusivo para convênios.</p>
+                    <button onclick="showInfo('beneficio')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+                <!-- Card 3 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="wallet" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Cartão Consignado</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">Crédito com taxas reduzidas e pagamento direto via margem consignável.</p>
+                    <button onclick="showInfo('cartao')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+                <!-- Card 4 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="trending-up" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Saque Limite do Cartão</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">Transforme o seu limite disponível em dinheiro imediato na sua conta bancária.</p>
+                    <button onclick="showInfo('saque')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+                <!-- Card 5 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="landmark" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Antecipação FGTS</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">Antecipe até 10 anos do seu saque aniversário sem comprometer sua renda mensal.</p>
+                    <button onclick="showInfo('fgts')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+                <!-- Card 6 -->
+                <div class="neon-card p-8 flex flex-col shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white mb-6"><i data-lucide="user-check" class="w-6 h-6"></i></div>
+                    <h3 class="text-xl font-black mb-4 uppercase">Consultoria Estratégica</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-6 flex-grow font-medium">Análise individual para portabilidade de dívidas com redução real de parcelas.</p>
+                    <button onclick="showInfo('atendimento')" class="text-brand-primary font-black text-xs flex items-center gap-2 mb-6 hover:gap-3 transition-all uppercase italic">Saiba Mais <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <a href="https://wa.me/5563999637080" target="_blank" class="w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest hover:bg-brand-primary-hover transition">CONTRATAR</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section id="depoimentos" class="py-24 bg-brand-light">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl lg:text-5xl font-black text-brand-dark uppercase italic mb-4 tracking-tighter">O que dizem nossos clientes</h2>
+                <div class="h-1.5 w-20 bg-brand-primary mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="testimonial-card">
+                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"O atendimento do Consultor 4.0 foi espetacular. Consegui antecipar meu FGTS em menos de 30 minutos!"</p>
+                    <div class="font-black text-brand-dark">João Silva</div>
+                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Aposentado INSS</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Reduzi os juros dos meus empréstimos antigos através da portabilidade estratégica. Recomendo muito!"</p>
+                    <div class="font-black text-brand-dark">Maria Oliveira</div>
+                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Servidora Pública</div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center gap-1 text-brand-primary mb-4">
+                        <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
+                    </div>
+                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Equipe muito atenciosa e transparente. O dinheiro caiu na conta exatamente como prometido."</p>
+                    <div class="font-black text-brand-dark">Carlos Rocha</div>
+                    <div class="text-xs text-slate-400 font-bold uppercase tracking-widest">Pensionista</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Fale Conosco -->
+    <section id="contato" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <div class="space-y-10">
+                    <div>
+                        <p class="text-brand-primary font-black uppercase tracking-[0.2em] text-xs mb-4">CONTATO</p>
+                        <h2 class="text-4xl lg:text-6xl font-black text-brand-primary tracking-tighter uppercase italic">Dúvidas ou sugestões</h2>
+                    </div>
+
+                    <div class="space-y-8">
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-brand-primary"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">WhatsApp</p>
+                                <p class="text-lg font-black text-slate-800">(63) 99963-7080</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="mail" class="w-5 h-5 text-brand-primary"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Email</p>
+                                <p class="text-lg font-black text-slate-800">atendimentocf4.0@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-5">
+                            <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="instagram" class="w-5 h-5 text-brand-primary"></i></div>
+                            <div>
+                                <p class="text-xs text-slate-400 font-bold uppercase tracking-widest mb-1">Instagram</p>
+                                <p class="text-lg font-black text-slate-800">@consultorfinanceiro40</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="relative w-full max-w-sm">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" alt="Atendimento" class="rounded-3xl shadow-xl border-4 border-white">
+                    </div>
+                </div>
+
+                <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100">
+                    <form class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700">Nome completo</label>
+                            <input type="text" placeholder="Seu nome completo" class="w-full p-4 bg-white border-slate-200">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700">Telefone</label>
+                            <input type="text" placeholder="(00) 00000-0000" class="w-full p-4 bg-white border-slate-200">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700">Email</label>
+                            <input type="email" placeholder="seu@email.com" class="w-full p-4 bg-white border-slate-200">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-slate-700">Mensagem</label>
+                            <textarea placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 bg-white border-slate-200"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all shadow-xl shadow-orange-500/20 uppercase tracking-tighter">Enviar Mensagem</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rodapé Oficiais (AJUSTADO: CONSULTOR CF4.0) -->
+    <footer class="bg-[#111] text-slate-300 pt-20">
+        <div class="max-w-7xl mx-auto px-4 pb-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center md:text-left">
+                <div class="space-y-6">
+                    <span class="text-3xl font-black text-white italic">CONSULTOR <span class="text-brand-primary">CF4.0</span></span>
+                    <p class="text-sm text-slate-500 leading-relaxed font-medium">Especialistas em crédito estratégico e tecnologia financeira personalizada para realizar seus sonhos.</p>
+                </div>
+                <div>
+                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">MENU</h5>
+                    <ul class="space-y-4 text-sm font-medium">
+                        <li><a href="#inicio" class="hover:text-brand-primary transition">Início</a></li>
+                        <li><a href="#servicos" class="hover:text-brand-primary transition">Serviços</a></li>
+                        <li><a href="#depoimentos" class="hover:text-brand-primary transition">Depoimentos</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">SOCIAL</h5>
+                    <ul class="space-y-4 text-sm text-slate-500 font-medium">
+                        <li><a href="https://instagram.com/consultorfinanceiro40" target="_blank" class="hover:text-brand-primary transition">Instagram</a></li>
+                        <li><a href="https://wa.me/5563999637080" target="_blank" class="hover:text-brand-primary transition">WhatsApp</a></li>
+                    </ul>
+                </div>
+                <div class="space-y-8">
+                    <h5 class="text-brand-primary font-bold text-xs uppercase tracking-widest mb-8">CONTATO</h5>
+                    <ul class="space-y-5 text-sm font-medium">
+                        <li class="flex items-center justify-center md:justify-start gap-3"><i data-lucide="phone" class="w-4 h-4 text-brand-primary"></i> (63) 99963-7080</li>
+                        <li class="flex items-center justify-center md:justify-start gap-3"><i data-lucide="mail" class="w-4 h-4 text-brand-primary"></i> atendimentocf4.0@gmail.com</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-20 pt-8 border-t border-white/5 text-center text-[10px] uppercase font-bold tracking-[0.3em] text-slate-600">
+                © 2024 CONSULTOR CF4.0 - TODOS OS DIREITOS RESERVADOS.
+            </div>
+        </div>
+        <!-- Faixa Inferior Oficilalizada como V1 -->
+        <a href="#inicio" class="block bg-brand-primary py-3 text-center hover:bg-brand-primary-hover transition-colors group">
+            <p class="text-white text-[10px] font-black uppercase tracking-widest leading-none flex items-center justify-center gap-3">
+                CONSULTOR FINANCEIRO 4.0 CREDENCIADO DA REDE CONSIG 
+                <span class="h-4 w-[1px] bg-white/30"></span>
+                <span class="bg-white text-brand-primary px-2 py-0.5 rounded text-[9px] group-hover:scale-110 transition-transform shadow-sm">V1.0 FINALIZADA</span>
+            </p>
+        </a>
+    </footer>
+
+    <!-- Valenttina -->
+    <div class="fixed bottom-24 right-8 z-[200] flex items-end gap-4">
+        <div class="bg-white p-4 rounded-3xl rounded-br-none shadow-2xl max-w-[200px] border border-orange-100 hidden sm:block">
+            <p class="text-[11px] font-semibold leading-relaxed">Olá! Sou a <span class="text-brand-primary">Valenttina</span>. Vamos encontrar a melhor estratégia de crédito para você? ✨</p>
+        </div>
+        <a href="https://wa.me/5563999637080" target="_blank" class="relative group">
+            <div class="w-16 h-16 rounded-full border-4 border-brand-primary overflow-hidden shadow-2xl transition group-hover:scale-110">
+                <img src="images/logo_whatsapp_valenttina_duarte.png" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 border-2 border-white rounded-full"></div>
+        </a>
+    </div>
+
+    <!-- Modal Info -->
+    <div id="info-modal" class="info-overlay" onclick="closeInfo()">
+        <div class="bg-white p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative" onclick="event.stopPropagation()">
+            <button onclick="closeInfo()" class="absolute top-4 right-4 text-slate-400 hover:text-brand-dark"><i data-lucide="x"></i></button>
+            <div id="modal-icon" class="w-16 h-16 bg-brand-primary/10 rounded-2xl flex items-center justify-center text-brand-primary mb-6"></div>
+            <h4 id="modal-title" class="text-2xl font-black mb-4 italic uppercase"></h4>
+            <p id="modal-text" class="text-slate-600 leading-relaxed mb-8 text-sm font-medium"></p>
+            <a href="https://wa.me/5563999637080" target="_blank" class="block w-full bg-brand-primary text-white py-4 rounded-xl font-black text-center uppercase tracking-widest shadow-xl shadow-orange-500/20">Falar com Especialista</a>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Notificações Sociais Aleatórias
+        	const amounts = [
+  		"6.000", "8.500", "15.000", "3.000", "5.400", 
+    		"12.200", "20.000", "4.100", "2.500", "35.000", 
+   		"7.800", "50.000"];
+
+	const dreams = [
+   	 "realizar a reforma da casa", 
+   	 "fazer a viagem dos sonhos", 
+ 	 "quitar dívidas pendentes", 
+    	 "comprar um novo veículo", 
+    	 "investir no próprio negócio", 
+    	 "ajudar a família",
+    	 "pagar os estudos",
+    	 "limpar o nome",
+     	 "comprar móveis novos",
+    	 "fazer um curso de especialização",
+    	 "dar entrada em um imóvel",
+    	 "organizar uma festa de casamento"
+	];
+
+        function showRandomNotification() {
+            const popup = document.getElementById('notification-popup');
+            const msgDetail = document.getElementById('notify-detail');
+            
+            const randomAmount = amounts[Math.floor(Math.random() * amounts.length)];
+            const randomDream = dreams[Math.floor(Math.random() * dreams.length)];
+            
+            msgDetail.innerText = `Realizou um empréstimo de R$ ${randomAmount} para ${randomDream}.`;
+            
+            popup.classList.add('show');
+            
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 6000);
+        }
+
+        setInterval(showRandomNotification, 12000);
+        setTimeout(showRandomNotification, 3000);
+
+        const infoData = {
+            consignado: { title: "Crédito Consignado", text: "As melhores taxas para aposentados e pensionistas.", icon: "banknote" },
+            beneficio: { title: "Cartão Benefício", text: "Vantagens exclusivas e margem livre para compras.", icon: "credit-card" },
+            cartao: { title: "Cartão Consignado", text: "Dinheiro na mão com desconto em folha.", icon: "wallet" },
+            saque: { title: "Saque Limite", text: "Transforme o limite do cartão em dinheiro.", icon: "trending-up" },
+            fgts: { title: "Antecipação FGTS", text: "Antecipe o seu saque aniversário hoje.", icon: "landmark" },
+            atendimento: { title: "Consultoria 4.0", text: "Estratégia personalizada para o seu bolso.", icon: "user-check" }
+        };
+
+        function showInfo(key) {
+            const data = infoData[key] || { title: "Informação", text: "Entre em contato para saber mais.", icon: "info" };
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-text').innerText = data.text;
+            document.getElementById('modal-icon').innerHTML = `<i data-lucide="${data.icon}" class="w-8 h-8"></i>`;
+            document.getElementById('info-modal').classList.add('active');
+            lucide.createIcons();
+        }
+
+        function closeInfo() {
+            document.getElementById('info-modal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
