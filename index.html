@@ -327,12 +327,16 @@
             </div>
 
             <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100">
-                <form class="space-y-6" onsubmit="event.preventDefault(); window.open('https://wa.me/5563999637080')">
-                    <input type="text" placeholder="Nome completo" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <input type="text" placeholder="(00) 00000-0000" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <input type="email" placeholder="seu@email.com" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <textarea placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all"></textarea>
-                    <button class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all uppercase shadow-xl shadow-orange-500/20">Enviar Mensagem</button>
+                <form id="meuFormulario" class="space-y-6">
+                    <input type="text" name="nome" placeholder="Nome completo" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <input type="text" name="telefone" placeholder="(00) 00000-0000" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <input type="email" name="email" placeholder="seu@email.com" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    <textarea name="mensagem" placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all"></textarea>
+                  <div id="status-envio">
+                        <button type="submit" id="btnEnviar" class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all uppercase shadow-xl shadow-orange-500/20">
+                            Enviar Mensagem
+                        </button>
+                   </div>
                 </form>
             </div>
         </div>
@@ -481,6 +485,39 @@
                 typeValenttinaMessage(valenttinaQuotes[Math.floor(Math.random() * valenttinaQuotes.length)]);
             }, 6000);
         };
+
+        // Lógica de Envio para Google Sheets
+        document.getElementById('meuFormulario').addEventListener('submit', function(e) {
+            e.preventDefault(); 
+
+            const statusContainer = document.getElementById('status-envio');
+            const btn = document.getElementById('btnEnviar');
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbznGNsMW3OGNqPCOQsSVjHkJ1ugjefwSTZW_uwWkMpCjUzD6y2QkZs-6kFngMOF2fnpAw/exec';
+            const formData = new FormData(this);
+
+            // Feedback visual
+            btn.innerText = "ENVIANDO...";
+            btn.disabled = true;
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: formData,
+                mode: 'no-cors' // Evita o erro CORS ao testar localmente
+            })
+            .then(() => {
+                statusContainer.innerHTML = `
+                    <div class="w-full bg-green-100 text-green-700 p-4 rounded-xl text-center font-bold animate-bounce">
+                        ✓ Mensagem enviada com sucesso!
+                    </div>
+                `;
+                this.reset();
+            })
+            .catch(error => {
+                console.error('Erro!', error.message);
+                btn.innerText = "TENTAR NOVAMENTE";
+                btn.disabled = false;
+            });
+        });
     </script>
 </body>
 </html>
