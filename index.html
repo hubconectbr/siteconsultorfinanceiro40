@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Consultor Financeiro 4.0 | Parceiro Rede Consig</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { font-family: 'Outfit', sans-serif; background-color: #ffffff; overflow-x: hidden; width: 100%; }
@@ -34,7 +34,7 @@
         }
         @keyframes neon-flow { 0% { background-position: 0% center; } 100% { background-position: 200% center; } }
 
-        /* Hero com Fundo solicitado e transparência de 0.30 */
+        /* Hero com Fundo e transparência de 0.30 */
         .hero-section {
             position: relative;
             background-image: linear-gradient(rgba(0, 0, 0, 0.30), rgba(0, 0, 0, 0.50)), url('images/trabalhadores-de-varias-profissoes-felizes-fundo-de-predios.png');
@@ -85,11 +85,23 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 75, 18, 0); }
         }
 
-        .testimonial-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        
+        .testimonial-card { background: white; border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .testimonial-card:hover { transform: translateY(-5px); }
+
         .typing-indicator { display: inline-flex; gap: 2px; }
         .typing-dot { width: 4px; height: 4px; background: #94a3b8; border-radius: 50%; animation: dot-pulse 1s infinite ease-in-out; }
         @keyframes dot-pulse { 0%, 100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 1; transform: translateY(-2px); } }
+
+        /* Barra de Progresso de Envio */
+        .progress-container { width: 100%; height: 6px; background-color: #eee; border-radius: 10px; margin-top: 15px; overflow: hidden; display: none; }
+        .progress-bar { height: 100%; width: 0%; background-color: var(--brand-primary); transition: width 0.3s; }
+
+        /* Estilo para labels e placeholders não negritados */
+        .input-label { color: #64748b; font-weight: 600; font-size: 13px; margin-bottom: 6px; display: block; }
+        .form-input { font-weight: 500 !important; color: #334155; }
+        
+        /* Título Acolhedor */
+        .welcome-title { font-family: 'Quicksand', sans-serif; color: var(--brand-dark-blue); }
     </style>
 </head>
 <body class="text-slate-900">
@@ -134,20 +146,20 @@
     <div id="drawerOverlay" onclick="toggleDrawer()" class="hidden fixed inset-0 bg-black/40 lg:hidden backdrop-blur-sm"></div>
 
     <!-- Hero Section -->
-    <section id="inicio" class="hero-section min-h-[90vh] overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-            <div class="z-10 text-center lg:text-left">
+    <section id="inicio" class="hero-section min-h-[85vh] overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 py-20 flex flex-col items-center text-center">
+            <div class="z-10 w-full max-w-4xl">
                 <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md rounded-full text-white font-black text-xs mb-8 border border-white/20 tracking-wider uppercase">
                     <span class="text-brand-primary">★</span> 
                     PARCEIRO OFICIAL DA REDE CONSIG
                 </div>
-                <h1 class="text-5xl lg:text-[5.5rem] font-black text-white leading-[1] mb-8 italic uppercase tracking-tighter">
+                <h1 class="text-5xl lg:text-[6.5rem] font-black text-white leading-[0.95] mb-8 italic uppercase tracking-tighter">
                     Sua vida <br> <span class="text-brand-primary">4.0</span> agora.
                 </h1>
-                <p class="text-xl text-slate-100 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
+                <p class="text-xl md:text-2xl text-slate-100 mb-12 max-w-2xl mx-auto leading-relaxed font-light">
                     Libere o crédito que você merece com a segurança da Rede Consig e a inteligência estratégica do Consultor Financeiro 4.0. 
                 </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <div class="flex flex-col sm:flex-row gap-6 justify-center">
                     <a href="https://hubconectbr.github.io/calculadora.consultorfinanceiro/" target="_blank" class="bg-brand-primary text-white px-12 py-6 rounded-2xl font-black text-2xl hover:bg-brand-primary-hover transition-all transform hover:-translate-y-1 btn-pulse-orange shadow-2xl shadow-orange-500/40 flex items-center justify-center gap-4 uppercase tracking-tighter">
                         <i data-lucide="calculator" class="w-8 h-8"></i> Quero simular agora
                     </a>
@@ -276,26 +288,47 @@
             <div class="h-1.5 w-20 bg-brand-primary mx-auto mb-16 rounded-full"></div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                <!-- João Silva - Funcionário CLT -->
                 <div class="testimonial-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150&h=150" alt="João Silva" class="w-16 h-16 rounded-full border-2 border-brand-primary object-cover">
+                        <div>
+                            <div class="font-black text-brand-dark uppercase text-xs tracking-widest">João Silva</div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Funcionário CLT</div>
+                        </div>
+                    </div>
                     <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
-                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"O atendimento do Consultor 4.0 foi espetacular. Consegui antecipar meu FGTS em menos de 30 minutos!"</p>
-                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">João Silva - Aposentado INSS</div>
+                    <p class="text-slate-600 italic font-medium leading-relaxed">"Sempre tive receio de empréstimos, mas o Consultor 4.0 me mostrou uma estratégia limpa e rápida. O dinheiro caiu na conta sem burocracia."</p>
                 </div>
+                
                 <div class="testimonial-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150&h=150" alt="Maria Oliveira" class="w-16 h-16 rounded-full border-2 border-brand-primary object-cover">
+                        <div>
+                            <div class="font-black text-brand-dark uppercase text-xs tracking-widest">Maria Oliveira</div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Servidora Pública</div>
+                        </div>
+                    </div>
                     <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
-                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Reduzi os juros dos meus empréstimos antigos através da portabilidade estratégica. Recomendo muito!"</p>
-                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">Maria Oliveira - Servidora Pública</div>
+                    <p class="text-slate-600 italic font-medium leading-relaxed">"Reduzi os juros dos meus empréstimos antigos através da portabilidade estratégica. Recomendo muito para todos os colegas!"</p>
                 </div>
+
                 <div class="testimonial-card">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=150&h=150" alt="Carlos Rocha" class="w-16 h-16 rounded-full border-2 border-brand-primary object-cover">
+                        <div>
+                            <div class="font-black text-brand-dark uppercase text-xs tracking-widest">Carlos Rocha</div>
+                            <div class="text-[10px] text-slate-400 font-bold uppercase">Pensionista INSS</div>
+                        </div>
+                    </div>
                     <div class="flex text-brand-primary mb-4">
                         <i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i><i data-lucide="star" class="fill-current w-4 h-4"></i>
                     </div>
-                    <p class="text-slate-600 italic mb-6 font-medium leading-relaxed">"Equipe muito atenciosa e transparente. O dinheiro caiu na conta exatamente como prometido."</p>
-                    <div class="font-black text-brand-dark uppercase text-[10px] tracking-widest">Carlos Rocha - Pensionista</div>
+                    <p class="text-slate-600 italic font-medium leading-relaxed">"Equipe muito atenciosa. Consegui antecipar meu FGTS em menos de 30 minutos para reformar minha casa."</p>
                 </div>
             </div>
         </div>
@@ -304,39 +337,68 @@
     <!-- Fale Conosco -->
     <section id="contato" class="py-24 bg-white">
         <div class="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12">
-            <div class="space-y-10">
+            <!-- Coluna de Informações com borda discreta laranja realçada -->
+            <div class="space-y-10 p-10 rounded-[3rem] border-2 border-orange-100 shadow-xl bg-orange-50/10">
                 <div>
                     <p class="text-brand-primary font-black uppercase tracking-[0.2em] text-xs mb-4">CONTATO</p>
-                    <h2 class="text-4xl lg:text-6xl font-black text-brand-primary tracking-tighter uppercase italic">Dúvidas ou sugestões</h2>
+                    <h2 class="text-4xl lg:text-5xl font-black text-brand-primary tracking-tighter uppercase italic">Informações Oficiais</h2>
                 </div>
                 <div class="space-y-8">
                     <div class="flex items-center gap-5">
-                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5 text-brand-primary"></i></div>
-                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">WhatsApp</p><p class="text-lg font-black text-slate-800">(63) 99963-7080</p></div>
+                        <div class="w-12 h-12 rounded-full bg-brand-primary text-white flex items-center justify-center shrink-0"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                        <div><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">WhatsApp Central</p><p class="text-lg font-semibold text-slate-800">(63) 99963-7080</p></div>
                     </div>
                     <div class="flex items-center gap-5">
-                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="mail" class="w-5 h-5 text-brand-primary"></i></div>
-                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">Email</p><p class="text-lg font-black text-slate-800">atendimentocf4.0@gmail.com</p></div>
+                        <div class="w-12 h-12 rounded-full bg-brand-primary text-white flex items-center justify-center shrink-0"><i data-lucide="mail" class="w-5 h-5"></i></div>
+                        <div><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Email Atendimento</p><p class="text-lg font-semibold text-slate-800 text-sm sm:text-base">atendimentocf4.0@gmail.com</p></div>
                     </div>
                     <div class="flex items-center gap-5">
-                        <div class="w-12 h-12 rounded-full bg-brand-primary/10 flex items-center justify-center shrink-0"><i data-lucide="instagram" class="w-5 h-5 text-brand-primary"></i></div>
-                        <div><p class="text-xs text-slate-400 font-bold uppercase mb-1">Instagram</p><p class="text-lg font-black text-slate-800">@consultorfinanceiro40</p></div>
+                        <div class="w-12 h-12 rounded-full bg-brand-primary text-white flex items-center justify-center shrink-0"><i data-lucide="instagram" class="w-5 h-5"></i></div>
+                        <div><p class="text-[10px] text-slate-400 font-bold uppercase mb-1">Siga no Instagram</p><p class="text-lg font-semibold text-slate-800">@consultorfinanceiro40</p></div>
                     </div>
                 </div>
-                <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600" class="rounded-3xl shadow-xl border-4 border-white max-w-sm">
+                <div class="pt-6 border-t border-orange-100 mt-6 text-center lg:text-left">
+                    <p class="text-sm text-slate-500 font-medium leading-relaxed italic">"Estamos prontos para transformar sua realidade financeira com transparência e segurança."</p>
+                </div>
             </div>
 
-            <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100">
-                <form id="meuFormulario" class="space-y-6">
-                    <input type="text" name="nome" placeholder="Nome completo" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <input type="text" name="telefone" placeholder="(00) 00000-0000" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <input type="email" name="email" placeholder="seu@email.com" required class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
-                    <textarea name="mensagem" placeholder="Como podemos ajudar?" rows="4" class="w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all"></textarea>
-                  <div id="status-envio">
-                        <button type="submit" id="btnEnviar" class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all uppercase shadow-xl shadow-orange-500/20">
-                            Enviar Mensagem
+            <!-- Formulário Acolhedor -->
+            <div class="bg-brand-beige p-8 lg:p-12 rounded-[2.5rem] shadow-sm border border-orange-100 flex flex-col justify-center">
+                <div class="mb-10 text-center lg:text-left">
+                    <h3 class="welcome-title text-3xl md:text-4xl font-bold tracking-tight mb-2 italic">Oi! Vamos conversar?</h3>
+                    <p class="text-slate-500 font-medium text-sm">A Valenttina Duarte está online para te atender.</p>
+                </div>
+                <form id="contactForm" class="space-y-5">
+                    <div>
+                        <label class="input-label" for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required class="form-input w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    </div>
+                    <div>
+                        <label class="input-label" for="phoneMask">Telefone</label>
+                        <input type="text" id="phoneMask" name="telefone" placeholder="(63) 99999-9999" required class="form-input w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    </div>
+                    <div>
+                        <label class="input-label" for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required class="form-input w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all">
+                    </div>
+                    <div>
+                        <label class="input-label" for="mensagem">Sua Mensagem</label>
+                        <textarea id="mensagem" name="mensagem" placeholder="Como podemos ajudar?" rows="3" class="form-input w-full p-4 rounded-xl border border-slate-200 outline-none focus:border-brand-primary transition-all"></textarea>
+                    </div>
+                    
+                    <div id="submitContainer" class="relative pt-4">
+                        <button type="submit" id="btnSubmit" class="w-full bg-brand-primary text-white py-5 rounded-xl font-black text-xl hover:bg-brand-primary-hover transition-all uppercase shadow-xl shadow-orange-500/20 flex items-center justify-center gap-3">
+                            <span>Enviar Mensagem</span>
                         </button>
-                   </div>
+                        
+                        <div id="progressContainer" class="progress-container">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <div id="successMsg" class="hidden bg-green-100 border border-green-200 text-green-700 p-5 rounded-2xl text-center font-black animate-pulse flex items-center justify-center gap-2">
+                        <i data-lucide="check-circle"></i> MENSAGEM ENVIADA COM SUCESSO!
+                    </div>
                 </form>
             </div>
         </div>
@@ -358,15 +420,27 @@
                 </ul>
             </div>
             <div>
-                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">CONTATO</h5>
+                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">REDES SOCIAIS</h5>
                 <ul class="space-y-4 text-xs font-bold uppercase">
-                    <li>(63) 99963-7080</li>
-                    <li class="lowercase">atendimentocf4.0@gmail.com</li>
+                    <li>
+                        <a href="https://instagram.com/consultorfinanceiro4.0" target="_blank" class="hover:text-white transition flex items-center justify-center md:justify-start gap-2">
+                            <i data-lucide="instagram" class="w-4 h-4 text-brand-primary"></i> Instagram
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://facebook.com/consultorfinanceiro4.0" target="_blank" class="hover:text-white transition flex items-center justify-center md:justify-start gap-2">
+                            <i data-lucide="facebook" class="w-4 h-4 text-brand-primary"></i> Facebook
+                        </a>
+                    </li>
+                    <li class="text-[10px] text-slate-500 lowercase mt-2">@consultorfinanceiro4.0</li>
                 </ul>
             </div>
             <div>
-                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">LOCAL</h5>
-                <p class="text-xs font-bold uppercase">Palmas - Tocantins</p>
+                <h5 class="text-brand-primary font-bold text-xs mb-8 uppercase tracking-widest">CONTATO</h5>
+                <ul class="space-y-4 text-xs font-bold uppercase">
+                    <li class="flex items-center justify-center md:justify-start gap-2"><i data-lucide="phone" class="w-3 h-3 text-brand-primary"></i> (63) 99963-7080</li>
+                    <li class="lowercase flex items-center justify-center md:justify-start gap-2"><i data-lucide="mail" class="w-3 h-3 text-brand-primary"></i> atendimentocf4.0@gmail.com</li>
+                </ul>
             </div>
         </div>
         <div class="py-10 border-t border-white/5 text-center text-[10px] font-bold text-slate-600 uppercase tracking-[0.3em]">
@@ -380,7 +454,7 @@
         </a>
     </footer>
 
-    <!-- Notificações Dinâmicas (Social Proof) -->
+    <!-- Widgets Dinâmicos -->
     <div id="socialNotify">
         <div class="w-10 h-10 bg-orange-100 text-brand-primary rounded-full flex items-center justify-center flex-shrink-0"><i data-lucide="check-circle" class="w-5 h-5"></i></div>
         <div>
@@ -391,7 +465,7 @@
         </div>
     </div>
 
-    <!-- Valenttina -->
+    <!-- Botão Flutuante Valenttina -->
     <div class="fixed bottom-8 right-8 z-[200] flex flex-col items-end gap-5 pointer-events-none">
         <div id="bubble" class="bg-white p-6 rounded-[2.5rem] shadow-2xl border border-orange-100 text-sm font-bold text-slate-700 max-w-[280px] pointer-events-auto transition-all transform scale-0 origin-bottom-right">
             <p id="bubbleText">Olá! Sou a Valenttina Duarte. Estou aqui para ajudar você a conquistar sua liberdade financeira! ✨</p>
@@ -403,7 +477,7 @@
         </button>
     </div>
 
-    <!-- Modal Info -->
+    <!-- Modal Info Detalhes -->
     <div id="info-modal" class="info-overlay" onclick="closeInfo()">
         <div class="bg-white p-8 rounded-3xl max-w-md w-full mx-4 shadow-2xl relative" onclick="event.stopPropagation()">
             <button onclick="closeInfo()" class="absolute top-4 right-4 text-slate-400 hover:text-brand-dark"><i data-lucide="x"></i></button>
@@ -417,7 +491,7 @@
     <script>
         lucide.createIcons();
 
-        // DADOS ENVIADOS PARA CONGRUÊNCIA
+        // Dados Configurações
         const WHATS_NUM = "5563999637080";
         const isMobile = window.innerWidth < 1024;
         
@@ -433,11 +507,74 @@
             "O alívio de quitar as dívidas está a um clique. Deixe a burocracia com a gente! ❤️"
         ];
 
+        // Máscara de Telefone Inteligente
+        const phoneInput = document.getElementById('phoneMask');
+        phoneInput.addEventListener('input', (e) => {
+            let val = e.target.value.replace(/\D/g, '');
+            if (val.length > 11) val = val.slice(0, 11);
+            
+            if (val.length > 10) {
+                e.target.value = `(${val.slice(0, 2)}) ${val.slice(2, 7)}-${val.slice(7)}`;
+            } else if (val.length > 5) {
+                e.target.value = `(${val.slice(0, 2)}) ${val.slice(2, 6)}-${val.slice(6)}`;
+            } else if (val.length > 2) {
+                e.target.value = `(${val.slice(0, 2)}) ${val.slice(2)}`;
+            } else {
+                e.target.value = val;
+            }
+        });
+
+        // Lógica de Envio Profissional
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnSubmit');
+            const progress = document.getElementById('progressContainer');
+            const bar = document.getElementById('progressBar');
+            const success = document.getElementById('successMsg');
+            const form = this;
+
+            btn.innerHTML = `<span class="animate-spin"><i data-lucide="refresh-cw" class="w-5 h-5"></i></span> ENVIANDO...`;
+            btn.classList.add('opacity-50', 'pointer-events-none');
+            progress.style.display = 'block';
+            lucide.createIcons();
+
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progress.style.display = 'none';
+                        btn.style.display = 'none';
+                        success.classList.remove('hidden');
+                        form.reset();
+
+                        setTimeout(() => {
+                            success.classList.add('hidden');
+                            btn.style.display = 'flex';
+                            btn.innerHTML = `<span>Enviar Mensagem</span>`;
+                            btn.classList.remove('opacity-50', 'pointer-events-none');
+                        }, 5000);
+                    }, 500);
+                } else {
+                    width += 5;
+                    bar.style.width = width + '%';
+                }
+            }, 50);
+        });
+
         function showSocialProof() {
             const popup = document.getElementById('socialNotify');
-            document.getElementById('notifyName').innerText = notifyNames[Math.floor(Math.random() * notifyNames.length)];
-            document.getElementById('notifyAmount').innerText = notifyAmounts[Math.floor(Math.random() * notifyAmounts.length)];
-            document.getElementById('notifyDream').innerText = dreams[Math.floor(Math.random() * dreams.length)];
+            const nameEl = document.getElementById('notifyName');
+            const amountEl = document.getElementById('notifyAmount');
+            const dreamEl = document.getElementById('notifyDream');
+            
+            if (nameEl && amountEl && dreamEl) {
+                nameEl.innerText = notifyNames[Math.floor(Math.random() * notifyNames.length)];
+                amountEl.innerText = notifyAmounts[Math.floor(Math.random() * notifyAmounts.length)];
+                dreamEl.innerText = dreams[Math.floor(Math.random() * dreams.length)];
+            }
+            
             popup.classList.add('active');
             setTimeout(() => { popup.classList.remove('active'); }, 6000);
         }
@@ -445,26 +582,29 @@
         function typeValenttinaMessage(message) {
             const bubble = document.getElementById('bubble');
             const bubbleText = document.getElementById('bubbleText');
-            bubbleText.innerHTML = `<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div> Digitando...`;
-            bubble.classList.add('scale-100');
-            setTimeout(() => { bubbleText.innerText = message; }, 1800);
+            if (bubble && bubbleText) {
+                bubbleText.innerHTML = `<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div> Digitando...`;
+                bubble.classList.add('scale-100');
+                setTimeout(() => { bubbleText.innerText = message; }, 1800);
+            }
         }
 
         function toggleDrawer() {
-            document.getElementById('mobileDrawer').classList.toggle('active');
-            document.getElementById('drawerOverlay').classList.toggle('hidden');
+            const drawer = document.getElementById('mobileDrawer');
+            const overlay = document.getElementById('drawerOverlay');
+            drawer.classList.toggle('active');
+            overlay.classList.toggle('hidden');
         }
 
-        const infoData = {
-            consignado: { title: "Crédito Consignado", text: "As melhores taxas para aposentados e pensionistas.", icon: "banknote" },
-            beneficio: { title: "Cartão Benefício", text: "Vantagens exclusivas e margem livre para compras.", icon: "credit-card" },
-            cartao: { title: "Cartão Consignado", text: "Dinheiro na mão com desconto em folha.", icon: "wallet" },
-            saque: { title: "Saque Limite", text: "Transforme o limite do cartão em dinheiro.", icon: "trending-up" },
-            fgts: { title: "Antecipação FGTS", text: "Antecipe o seu saque aniversário hoje.", icon: "landmark" },
-            atendimento: { title: "Consultoria 4.0", text: "Estratégia personalizada para o seu bolso.", icon: "user-check" }
-        };
-
         function showInfo(key) {
+            const infoData = {
+                consignado: { title: "Crédito Consignado", text: "As melhores taxas para aposentados e pensionistas.", icon: "banknote" },
+                beneficio: { title: "Cartão Benefício", text: "Vantagens exclusivas e margem livre para compras.", icon: "credit-card" },
+                cartao: { title: "Cartão Consignado", text: "Dinheiro na mão com desconto em folha.", icon: "wallet" },
+                saque: { title: "Saque Limite", text: "Transforme o limite do cartão em dinheiro.", icon: "trending-up" },
+                fgts: { title: "Antecipação FGTS", text: "Antecipe o seu saque aniversário hoje.", icon: "landmark" },
+                atendimento: { title: "Consultoria 4.0", text: "Estratégia personalizada para o seu bolso.", icon: "user-check" }
+            };
             const data = infoData[key];
             document.getElementById('modal-title').innerText = data.title;
             document.getElementById('modal-text').innerText = data.text;
@@ -485,39 +625,6 @@
                 typeValenttinaMessage(valenttinaQuotes[Math.floor(Math.random() * valenttinaQuotes.length)]);
             }, 6000);
         };
-
-        // Lógica de Envio para Google Sheets
-        document.getElementById('meuFormulario').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-
-            const statusContainer = document.getElementById('status-envio');
-            const btn = document.getElementById('btnEnviar');
-            const scriptURL = 'https://script.google.com/macros/s/AKfycby7tjCWDtQm9Y5UDORQTF8z2-Cri0iE60fkX9fQ6DWYtOO7abCTExZkLaAYfAceOUv8pw/exec';
-            const formData = new FormData(this);
-
-            // Feedback visual
-            btn.innerText = "ENVIANDO...";
-            btn.disabled = true;
-
-            fetch(scriptURL, { 
-                method: 'POST', 
-                body: formData,
-                mode: 'no-cors' // Evita o erro CORS ao testar localmente
-            })
-            .then(() => {
-                statusContainer.innerHTML = `
-                    <div class="w-full bg-green-100 text-green-700 p-4 rounded-xl text-center font-bold animate-bounce">
-                        ✓ Mensagem enviada com sucesso!
-                    </div>
-                `;
-                this.reset();
-            })
-            .catch(error => {
-                console.error('Erro!', error.message);
-                btn.innerText = "TENTAR NOVAMENTE";
-                btn.disabled = false;
-            });
-        });
     </script>
 </body>
 </html>
